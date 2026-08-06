@@ -85,40 +85,24 @@ def login():
 
 
 # Validating Login data (POST)
-@app.route("/login", methods=["POST"])
+@app.route('/login', methods=['POST'])
 def login_user():
-    username = request.form["username"].strip()
-    password = request.form["password"].strip()
+    username = request.form['username'].strip()
+    password = request.form['password'].strip()
 
-    conn = sqlite3.connect("library.db")
-    cursor = conn.cursor()
+    conn = sqlite3.connect('library.db')
+    c = conn.cursor()
 
-    # Checking if the username and password exist in the database
-    cursor.execute(
-        """
-        SELECT *
-        FROM users
-        WHERE username = ? AND password = ?
-        """,
-        (username, password),
+    c.execute(
+        'SELECT * FROM users WHERE username = ? AND password = ?',
+        (username, password)
     )
 
-    user = cursor.fetchone()
+    user = c.fetchone()
     conn.close()
 
     if user:
-        return (
-            f"<h1>Welcome back, {username}!</h1>"
-            "<p>Login successful.</p>"
-            "<br>"
-            "<a href='/login'>Logout</a>"
-        )
+        session['username'] = username
+        return redirect(url_for('home'))
 
-    return (
-        'Invalid username or password! '
-        '<a href="/login">Try again</a>'
-    )
-
-
-if __name__ == "__main__":
-    app.run(port=5000)
+    return 'Invalid username or password! <a href="/login">Try again</a>'
