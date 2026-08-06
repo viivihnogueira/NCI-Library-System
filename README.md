@@ -1,6 +1,6 @@
 # NCI-Library-System
 
-# PBI-01: User Registration and Login - Testing Plan & Scenarios
+# PBI-01: User Registration and Login - Testing Plan & Scenarios (Viviani Nogueira)
 
 As part of Checkpoint 3 requirements, the User Registration and Login (PBI-01) have had some testing to validate the functions, data, and security.
 
