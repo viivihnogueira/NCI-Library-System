@@ -1,7 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for
-import sqlite3
+from flask import Flask, render_template, request, redirect, url_for, session
 
 app = Flask(__name__)
+app.secret_key = 'nci-library-secret-key'
 
 # Creating the user database table
 def init_db():
