@@ -30,12 +30,14 @@ init_db()
 
 
 # Home page routing
-@app.route("/")
+@app.route('/')
 def home():
-    return (
-        'Welcome to NCI Library System! '
-        'Go to <a href="/register">Register</a> '
-        'or <a href="/login">Login</a>.'
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    return render_template(
+        'home.html',
+        username=session['username']
     )
 
 
