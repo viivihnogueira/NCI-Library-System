@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>NCI Library - Search Books</title>
+  </head>
+  <body>
+    <h1>Search Books</h1>
+
+    <p>Logged in as <strong>{{ username }}</strong></p>
+
+    <form action="/search" method="GET">
+      <label for="query">Title, author or category:</label><br /><br />
+
+      <input
+        type="text"
+        id="query"
+        name="query"
+        value="{{ query }}"
+        placeholder="Enter a title, author or category"
+        required
+      />
+
+      <button type="submit">Search</button>
+    </form>
+
+    <hr />
+
+    {% if query %}
+    <h2>Search results for “{{ query }}”</h2>
+
+    {% if books %}
+    <table border="1" cellpadding="8">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Author</th>
+          <th>Category</th>
+          <th>Availability</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for book in books %}
+        <tr>
+          <td>{{ book[1] }}</td>
+          <td>{{ book[2] }}</td>
+          <td>{{ book[3] }}</td>
+          <td>
+            {% if book[4] == 1 %} Available {% else %} Unavailable {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p>No books were found for your search.</p>
+    {% endif %} {% else %}
+    <p>Enter a title, author or category to search the library catalogue.</p>
+    {% endif %}
+
+    <br />
+
+    <a href="/">Home</a>
+    |
+    <a href="/logout">Logout</a>
+  </body>
+</html>
