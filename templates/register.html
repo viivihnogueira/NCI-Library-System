@@ -1,22 +1,39 @@
-<html>
-<head>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NCI Library - Register</title>
-</head>
-<body>
+  </head>
+  <body>
     <h2>Register New User</h2>
-    
+
     <!-- Form to collect user data -->
     <form action="/register" method="POST">
-        <label>Username:</label><br>
-        <input type="text" name="username" required><br><br>
-        
-        <label>Password:</label><br>
-        <input type="password" name="password" required><br><br>
-        
-        <button type="submit">Create Account</button>
+      <label for="register-username">Username:</label><br />
+      <input
+        type="text"
+        id="register-username"
+        name="username"
+        placeholder="Choose a username"
+        autocomplete="username"
+        required
+      /><br /><br />
+
+      <label for="register-password">Password:</label><br />
+      <input
+        type="password"
+        id="register-password"
+        name="password"
+        placeholder="Choose a password"
+        autocomplete="new-password"
+        required
+      /><br /><br />
+
+      <button type="submit">Create Account</button>
     </form>
-    
-    <br>
+
+    <br />
     <a href="/login">Already registered? Go to Login</a>
-</body>
+  </body>
 </html>

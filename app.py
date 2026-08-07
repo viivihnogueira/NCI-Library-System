@@ -9,6 +9,7 @@ def init_db():
     conn = sqlite3.connect('library.db')
     c = conn.cursor()
 
+    # Create the users table if it doesn't exist
     c.execute('''
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -16,6 +17,41 @@ def init_db():
             password TEXT NOT NULL
         )
     ''')
+
+    # Create the books table if it doesn't exist
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS books (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            author TEXT NOT NULL,
+            category TEXT NOT NULL,
+            available INTEGER NOT NULL DEFAULT 1
+        )
+    ''')
+
+    # Check if the books table is empty
+    c.execute('SELECT COUNT(*) FROM books')
+    book_count = c.fetchone()[0]
+
+    if book_count == 0:
+        sample_books = [
+        ('The Hobbit', 'J. R. R. Tolkien', 'Fantasy', 1),
+        ('The Fellowship of the Ring', 'J. R. R. Tolkien', 'Fantasy', 1),
+        ('Harry Potter and the Philosopher’s Stone', 'J. K. Rowling', 'Fantasy', 1),
+        ('The Chronicles of Narnia', 'C. S. Lewis', 'Fantasy', 0),
+        ('A Game of Thrones', 'George R. R. Martin', 'Fantasy', 1),
+        ('The Name of the Wind', 'Patrick Rothfuss', 'Fantasy', 1),
+        ('Percy Jackson and the Lightning Thief', 'Rick Riordan', 'Fantasy', 1),
+        ('Alice’s Adventures in Wonderland', 'Lewis Carroll', 'Fantasy', 0),        ]
+
+        # Insert sample books into the books table
+        c.executemany(
+            '''
+            INSERT INTO books (title, author, category, available)
+            VALUES (?, ?, ?, ?)
+            ''',
+            sample_books
+        )
 
     conn.commit()
     conn.close()
@@ -93,6 +129,41 @@ def login_user():
 
     return 'Invalid username or password! <a href="/login">Try again</a>'
 
+@app.route('/search')
+def search_books():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    query = request.args.get('query', '').strip()
+    books = []
+
+    if query:
+        search_term = f'%{query}%'
+
+        conn = sqlite3.connect('library.db')
+        c = conn.cursor()
+
+        c.execute(
+            '''
+            SELECT id, title, author, category, available
+            FROM books
+            WHERE title LIKE ?
+               OR author LIKE ?
+               OR category LIKE ?
+            ORDER BY title
+            ''',
+            (search_term, search_term, search_term)
+        )
+
+        books = c.fetchall()
+        conn.close()
+
+    return render_template(
+        'search.html',
+        username=session['username'],
+        books=books,
+        query=query
+    )
 
 @app.route('/logout')
 def logout():
