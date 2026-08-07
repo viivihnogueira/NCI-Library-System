@@ -129,6 +129,41 @@ def login_user():
 
     return 'Invalid username or password! <a href="/login">Try again</a>'
 
+@app.route('/search')
+def search_books():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    query = request.args.get('query', '').strip()
+    books = []
+
+    if query:
+        search_term = f'%{query}%'
+
+        conn = sqlite3.connect('library.db')
+        c = conn.cursor()
+
+        c.execute(
+            '''
+            SELECT id, title, author, category, available
+            FROM books
+            WHERE title LIKE ?
+               OR author LIKE ?
+               OR category LIKE ?
+            ORDER BY title
+            ''',
+            (search_term, search_term, search_term)
+        )
+
+        books = c.fetchall()
+        conn.close()
+
+    return render_template(
+        'search.html',
+        username=session['username'],
+        books=books,
+        query=query
+    )
 
 @app.route('/logout')
 def logout():
